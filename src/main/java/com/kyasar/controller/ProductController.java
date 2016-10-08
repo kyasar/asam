@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -19,6 +20,11 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  */
 @RestController
 public class ProductController {
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private HttpServletRequest request; // for debug
 
     @Autowired
     private ProductServiceImpl productServiceImpl;
@@ -33,9 +39,9 @@ public class ProductController {
     {
         Product p = productServiceImpl.findOne(_id);
         if (p != null) {
-            return new ResponseEntity<Product>(p, HttpStatus.OK);
+            return new ResponseEntity<>(p, HttpStatus.OK);
         } else {
-            return new ResponseEntity<Product>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -46,8 +52,9 @@ public class ProductController {
     public @ResponseBody
     ResponseEntity<Collection<Product>> getProducts()
     {
+        log.debug("GET " + request.getRequestURI());
         Collection<Product> products = productServiceImpl.findAll();
-        return new ResponseEntity<Collection<Product>>(products, HttpStatus.OK);
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @RequestMapping(
@@ -60,9 +67,9 @@ public class ProductController {
     {
         Product savedProduct = productServiceImpl.create(p);
         if (savedProduct != null)
-            return new ResponseEntity<Product>(savedProduct, HttpStatus.CREATED);
+            return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
         else
-            return new ResponseEntity<Product>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     @RequestMapping(
@@ -77,15 +84,15 @@ public class ProductController {
     {
         Product present = productServiceImpl.findOne(_id);
         if (present == null)
-            return new ResponseEntity<Product>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         p.set_id(present.get_id());
 
         Product savedProduct = productServiceImpl.update(p);
         if (savedProduct != null)
-            return new ResponseEntity<Product>(savedProduct, HttpStatus.OK);
+            return new ResponseEntity<>(savedProduct, HttpStatus.OK);
         else
-            return new ResponseEntity<Product>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     @RequestMapping(
@@ -96,9 +103,9 @@ public class ProductController {
     {
         Product present = productServiceImpl.findOne(_id);
         if (present == null)
-            return new ResponseEntity<Product>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         productServiceImpl.delete(_id);
-        return new ResponseEntity<Product>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

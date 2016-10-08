@@ -2,11 +2,15 @@ package com.kyasar.controller;
 
 import com.kyasar.model.Point;
 import com.kyasar.repository.PointRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -17,6 +21,11 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RestController
 public class PointController {
 
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private HttpServletRequest request; // for debug
+    
     @Autowired
     PointRepository pointRepository;
 
