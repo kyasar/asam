@@ -16,36 +16,27 @@
 
 package com.kyasar.service;
 
-import java.util.Collection;
 import java.util.List;
 
 
 import com.kyasar.model.User;
 import com.kyasar.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserDetailsService, UserService {
+public class UserServiceImpl implements UserService {
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
 	private final UserRepository userRepository;
 
 	@Autowired
 	public UserServiceImpl(UserRepository userRepository) {
 		this.userRepository = userRepository;
-	}
-
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByUsername(username);
-		if (user == null) {
-			throw new UsernameNotFoundException(String.format("User %s does not exist!", username));
-		}
-		return new UserRepositoryUserDetails(user);
 	}
 
 	@Override
@@ -72,45 +63,4 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	public void delete(String _id) {
 		userRepository.delete(_id);
 	}
-
-	private final static class UserRepositoryUserDetails extends User implements UserDetails {
-
-		private static final long serialVersionUID = 1L;
-
-		private UserRepositoryUserDetails(User user) {
-			super(user);
-		}
-
-		@Override
-		public Collection<? extends GrantedAuthority> getAuthorities() {
-			return getRoles();
-		}
-
-		@Override
-		public String getUsername() {
-			return getUsername();
-		}
-
-		@Override
-		public boolean isAccountNonExpired() {
-			return true;
-		}
-
-		@Override
-		public boolean isAccountNonLocked() {
-			return true;
-		}
-
-		@Override
-		public boolean isCredentialsNonExpired() {
-			return true;
-		}
-
-		@Override
-		public boolean isEnabled() {
-			return true;
-		}
-
-	}
-
 }

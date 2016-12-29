@@ -16,29 +16,40 @@
 
 package com.kyasar.config;
 
+import com.kyasar.service.AppUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Configuration
 @EnableWebSecurity
+@ComponentScan("com.kyasar")
+//@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+	@Autowired
+	private AppUserDetailsService appUserDetailsService;
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
+		/*
 		auth.inMemoryAuthentication()
 				.withUser("john").password("123").roles("USER")
 				.and()
 				.withUser("kadir").password("123").roles("ADMIN");
+		*/
+		auth.userDetailsService(appUserDetailsService);
 	}
 
 	@Override

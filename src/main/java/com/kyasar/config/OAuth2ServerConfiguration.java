@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -68,13 +69,13 @@ public class OAuth2ServerConfiguration {
 
 	@Configuration
 	@EnableAuthorizationServer
+	@ComponentScan("com.kyasar")
 	protected static class AuthorizationServerConfiguration extends
 			AuthorizationServerConfigurerAdapter {
 
 		private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 		@Autowired
-		@Qualifier("authenticationManagerBean")
 		private AuthenticationManager authenticationManager;
 
 		@Override
