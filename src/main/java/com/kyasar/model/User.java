@@ -4,48 +4,65 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.validation.constraints.NotNull;
 
 @Document(collection="users")
 public class User {
 
 	@Id
-	private Integer id;
+	private String _id;
 
-	@NotEmpty
+	@NotNull
 	private String name;
 
-	@NotEmpty
-	private String login;
+	@NotNull
+	private String surname;
 
-	@NotEmpty
+	@NotNull
+	private String username;
+
+	@NotNull
 	private String password;
 
 	@JsonIgnore
 	private Set<Role> roles = new HashSet<Role>();
 
-	public User() {
+	public User(
+			@JsonProperty("name") String name,
+			@JsonProperty("surname") String surname,
+			@JsonProperty("username") String username,
+			@JsonProperty("password") String password) {
+		this.name = name;
+		this.surname = surname;
+		this.username = username;
+		this.password = password;
 	}
 
 	public User(User user) {
 		super();
-		this.id = user.getId();
+		this._id = user.get_id();
 		this.name = user.getName();
-		this.login = user.getLogin();
+		this.surname = user.getSurname();
+		this.username = user.getUsername();
 		this.password = user.getPassword();
 		this.roles = user.getRoles();
 	}
 
-	public Integer getId() {
-		return id;
+	public User() {
+
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public String get_id() {
+		return _id;
+	}
+
+	public void set_id(String _id) {
+		this._id = _id;
 	}
 
 	public String getName() {
@@ -56,12 +73,20 @@ public class User {
 		this.name = name;
 	}
 
-	public String getLogin() {
-		return login;
+	public String getSurname() {
+		return surname;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
@@ -79,5 +104,4 @@ public class User {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
-
 }

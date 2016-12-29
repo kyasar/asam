@@ -41,16 +41,12 @@
 			<version>2.0.5.RELEASE</version>
 		</dependency>
 
-		<!--
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.1.3.Final</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.security.oauth</groupId>
-			<artifactId>spring-security-oauth2</artifactId>
-		</dependency>
-		-->
+
 		<!-- test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -16,23 +16,16 @@
 
 package com.kyasar.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Document(collection="roles")
 public class Role implements GrantedAuthority {
 
-	private static final long serialVersionUID = 1L;
-
 	@Id
-	private Integer id;
+	private String _id;
 
 	@NotEmpty
 	private String name;
@@ -42,12 +35,8 @@ public class Role implements GrantedAuthority {
 		return name;
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
+	public String getId() {
+		return _id;
 	}
 
 	public String getName() {

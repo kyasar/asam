@@ -18,9 +18,9 @@ package com.kyasar.repository;
 
 import com.kyasar.model.User;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserRepository extends MongoRepository<User, String> {
 
-	User findByLogin(String login);
+	User findByUsername(String username);
 }

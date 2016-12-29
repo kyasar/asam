@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +15,6 @@ import java.util.Collection;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
-/**
- * Created by kadir on 25.09.2016.
- */
 @RestController
 public class ProductController {
 
@@ -47,7 +43,7 @@ public class ProductController {
     }
 
     @RequestMapping(
-            value = "/auth/product",
+            value = "/product",
             method=GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody

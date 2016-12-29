@@ -17,6 +17,7 @@
 package com.kyasar.service;
 
 import java.util.Collection;
+import java.util.List;
 
 
 import com.kyasar.model.User;
@@ -29,22 +30,47 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class UserServiceImpl implements UserDetailsService, UserService {
 
 	private final UserRepository userRepository;
 
 	@Autowired
-	public CustomUserDetailsService(UserRepository userRepository) {
+	public UserServiceImpl(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByLogin(username);
+		User user = userRepository.findByUsername(username);
 		if (user == null) {
 			throw new UsernameNotFoundException(String.format("User %s does not exist!", username));
 		}
 		return new UserRepositoryUserDetails(user);
+	}
+
+	@Override
+	public List<User> findAll() {
+		return userRepository.findAll();
+	}
+
+	@Override
+	public User findOne(String _id) {
+		return userRepository.findOne(_id);
+	}
+
+	@Override
+	public User create(User user) {
+		return userRepository.save(user);
+	}
+
+	@Override
+	public User update(User p) {
+		return null;
+	}
+
+	@Override
+	public void delete(String _id) {
+		userRepository.delete(_id);
 	}
 
 	private final static class UserRepositoryUserDetails extends User implements UserDetails {
@@ -62,7 +88,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 		@Override
 		public String getUsername() {
-			return getLogin();
+			return getUsername();
 		}
 
 		@Override
