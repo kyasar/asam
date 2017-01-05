@@ -1,6 +1,7 @@
 package com.kyasar.service;
 
 import com.kyasar.model.Product;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -17,5 +18,6 @@ public interface ProductService {
 
     Product update(Product p);
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     void delete(String _id);
 }

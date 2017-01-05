@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -59,10 +60,13 @@ public class OAuth2ServerConfiguration {
 		public void configure(HttpSecurity http) throws Exception {
 			http.
 					anonymous().disable()
-					.requestMatchers().antMatchers("/auth/**")
-					.and().authorizeRequests()
-					.antMatchers("/auth/**").access("hasRole('USER')")
-					.and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
+					.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+					.and()
+					.authorizeRequests().antMatchers("/user/**").authenticated()
+					.and()
+					.authorizeRequests().antMatchers("/products/**").authenticated()
+					.and()
+					.exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
 		}
 
 	}
@@ -86,8 +90,8 @@ public class OAuth2ServerConfiguration {
 					.secret("secret")
 					.authorizedGrantTypes("implicit", "password", "authorization_code", "refresh_token")
 					.scopes("read")
-					.accessTokenValiditySeconds(600).//Access token is only valid for 2 minutes.
-					refreshTokenValiditySeconds(600);//Refresh token is only valid for 10 minutes.
+					.accessTokenValiditySeconds(60).//Access token is only valid for 2 minutes.
+					refreshTokenValiditySeconds(60);//Refresh token is only valid for 10 minutes.
 		}
 
 		@Override

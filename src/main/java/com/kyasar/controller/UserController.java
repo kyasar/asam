@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @RequestMapping(
-            value = "/user",
+            value = "/users",
             method= POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.ALL_VALUE)
@@ -67,8 +67,6 @@ public class UserController {
     ResponseEntity<User> createUser(@Valid @RequestBody User user)
     {
         log.debug("POST " + request.getRequestURI());
-        //if (bindingResult.hasErrors())
-        //    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         User savedUser = userServiceImpl.create(user);
         if (savedUser != null)

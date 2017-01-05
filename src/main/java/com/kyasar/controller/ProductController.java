@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -93,11 +94,12 @@ public class ProductController {
     }
 
     @RequestMapping(
-            value = "/product/{_id}",
+            value = "/products/{_id}",
             method= DELETE)
     public ResponseEntity<Product> removeProduct(
             @PathVariable(value="_id") String _id)
     {
+        log.debug("Delete role: " + request.isUserInRole("ADMIN"));
         Product present = productServiceImpl.findOne(_id);
         if (present == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

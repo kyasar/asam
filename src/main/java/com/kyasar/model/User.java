@@ -30,7 +30,7 @@ public class User {
 	private String password;
 
 	@JsonIgnore
-	private Set<Role> roles = new HashSet<Role>();
+	private Set<String> roles = new HashSet<String>();
 
 	public User(
 			@JsonProperty("name") String name,
@@ -41,6 +41,9 @@ public class User {
 		this.surname = surname;
 		this.username = username;
 		this.password = password;
+		this.roles.add("ROLE_USER");
+		if (name.equalsIgnoreCase("kadir"))	// for test only
+			this.roles.add("ROLE_ADMIN");
 	}
 
 	public User(User user) {
@@ -97,11 +100,11 @@ public class User {
 		this.password = password;
 	}
 
-	public Set<Role> getRoles() {
+	public Set<String> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(Set<String> roles) {
 		this.roles = roles;
 	}
 }
