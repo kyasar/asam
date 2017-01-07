@@ -18,6 +18,6 @@ public interface ProductService {
 
     Product update(Product p);
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     void delete(String _id);
 }

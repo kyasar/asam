@@ -19,7 +19,6 @@ import java.util.Collection;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
-@Validated
 public class UserController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
