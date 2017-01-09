@@ -1,6 +1,8 @@
 package com.kyasar.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,22 +19,12 @@ public class Product {
     private String barcode;
 
     @GeoSpatialIndexed
-    private double[] location;
+    private Point location;
 
     public Product(String name, String barcode, double lat, double log) {
-        location = new double[2];
-        location[0] = lat;
-        location[1] = log;
+        location = new Point(lat, log);
         this.name = name;
         this.barcode = barcode;
-    }
-
-    public double[] getLocation() {
-        return location;
-    }
-
-    public void setLocation(double[] location) {
-        this.location = location;
     }
 
     public Product() {
@@ -67,4 +59,11 @@ public class Product {
         this.barcode = barcode;
     }
 
+    public Point getLocation() {
+        return location;
+    }
+
+    public void setLocation(Point location) {
+        this.location = location;
+    }
 }

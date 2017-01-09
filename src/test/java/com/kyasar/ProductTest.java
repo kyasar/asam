@@ -12,16 +12,19 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.geo.Distance;
-import org.springframework.data.geo.GeoResult;
-import org.springframework.data.geo.Metrics;
-import org.springframework.data.geo.Point;
+import org.springframework.data.geo.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.data.mongodb.core.geo.GeoJsonPolygon;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.NearQuery;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -64,13 +67,13 @@ public class ProductTest {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<String>(body.toString(), headers);
 
-		ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
+		//ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
+		//System.out.println(result);
+		//assertEquals(201, result.getStatusCode().value());
 
-		System.out.println(result);
-		assertEquals(201, result.getStatusCode().value());
-
-		repository.save(new Product("Urun10", "2222", 51.4678685, -0.0860632));
-		repository.save(new Product("Urun11", "2223", 51.4678785, -0.0865632));
+		repository.save(new Product("Urun4", "44", 39.896357, 32.804146));
+		repository.save(new Product("Urun5", "55", 39.900439, 32.797623));
+		repository.save(new Product("Urun6", "66", 39.889508, 32.791958));
 	}
 
 	@Test
@@ -89,10 +92,26 @@ public class ProductTest {
 		System.out.println(result);
 		assertEquals(200, result.getStatusCode().value());
 
-		System.out.println("Pubs found within 1K of '51.4634836,-0.0841914':");
-		System.out.println("--------------------------------");
-		for (GeoResult<Product> p : repository.findByLocationNear(new Point(51.4634836, -0.0841914), new Distance(100, Metrics.KILOMETERS))) {
-			System.out.println(p.getContent().getName());
+		System.out.println("--------------------");
+		Circle circle = new Circle(39.899649, 32.805347, 0.1);
+		List<Product> products = mongoTemplate.find(new Query(Criteria.where("location").within(circle)), Product.class);
+		for (Product p : products) {
+			System.out.println(p.getName());
+		}
+
+		System.out.println("--------------------");
+		Point location = new Point(39.899649, 32.805347);
+		NearQuery query = NearQuery.near(location).maxDistance(new Distance(1, Metrics.KILOMETERS));
+		List<Product> results = repository.findByLocationWithin(new Polygon(
+			new Point(39.887928, 32.794327),
+			new Point(39.887638, 32.801811),
+			new Point(39.902191, 32.797005),
+				new Point(39.890996, 32.772543)
+		)); //mongoTemplate.geoNear(query, Product.class);
+		//for (GeoResult<Product> p : repository.findByLocationNear(
+		//		new Point(39.899649, 32.805347), new Distance(1, Metrics.KILOMETERS))) {
+		for (Product p : results) {
+			System.out.println(p.getName());
 		}
 	}
 }
