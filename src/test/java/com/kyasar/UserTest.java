@@ -1,7 +1,7 @@
 package com.kyasar;
 
+import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +14,6 @@ import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
@@ -22,13 +21,19 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ProductTest {
+public class UserTest {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
 	@Value("${mapis.api.url}")
 	private String apiURL;
+
+	@Value("${mapis.client.id}")
+	private String apiClientId;
+
+	@Value("${mapis.client.secret}")
+	private String apiClientSecret;
 
 	@Test
 	public void t0_cleanUp()
@@ -42,14 +47,16 @@ public class ProductTest {
 	}
 
 	@Test
-	public void t1_insertProducts()
+	public void t1_insertUser()
 	{
-		final String uri = apiURL + "/product";
+		final String uri = apiURL + "/users";
 
 		RestTemplate restTemplate = new RestTemplate();
 		JSONObject body = new JSONObject();
-		body.put("name", "Urun1");
-		body.put("barcode", "11111");
+		body.put("name", "kadir");
+		body.put("surname", "yasar");
+		body.put("username", "kyasar");
+		body.put("password", "123");
 		HttpHeaders headers = new HttpHeaders();
 
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -62,19 +69,33 @@ public class ProductTest {
 	}
 
 	@Test
-	public void t2_getProducts()
+	public void t2_authUser()
 	{
-		final String uri = apiURL + "/product";
+		StringBuilder uri = new StringBuilder(apiURL + "/oauth/token?");
+		uri.append("grant_type=");
+		uri.append("password");
+		uri.append("&");
+		uri.append("username=");
+		uri.append("kyasar");
+		uri.append("&");
+		uri.append("password=");
+		uri.append("123");
 
 		RestTemplate restTemplate = new RestTemplate();
 
+		String plainCreds = apiClientId + ":" + apiClientSecret;
+		byte[] plainCredsBytes = plainCreds.getBytes();
+		byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
+		String base64Creds = new String(base64CredsBytes);
+
 		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+		headers.add("Authorization", "Basic " + base64Creds);
+		HttpEntity<String> request = new HttpEntity<String>(headers);
 
-		ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+		ResponseEntity<String> response = restTemplate.exchange(uri.toString(), HttpMethod.POST, request, String.class);
 
-		System.out.println(result);
-		assertEquals(200, result.getStatusCode().value());
+		System.out.println(response);
+		//assertEquals(201, result.getStatusCode().value());
 	}
+
 }

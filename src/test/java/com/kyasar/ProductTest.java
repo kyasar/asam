@@ -1,5 +1,8 @@
 package com.kyasar;
 
+import com.kyasar.model.Product;
+import com.kyasar.repository.ProductRepository;
+import com.mongodb.gridfs.GridFSInputFile;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -9,12 +12,15 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.GeoResult;
+import org.springframework.data.geo.Metrics;
+import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
@@ -22,10 +28,13 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ApplicationTests {
+public class ProductTest {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
+
+	@Autowired
+	private ProductRepository repository;
 
 	@Value("${mapis.api.url}")
 	private String apiURL;
@@ -59,6 +68,9 @@ public class ApplicationTests {
 
 		System.out.println(result);
 		assertEquals(201, result.getStatusCode().value());
+
+		repository.save(new Product("Urun10", "2222", 51.4678685, -0.0860632));
+		repository.save(new Product("Urun11", "2223", 51.4678785, -0.0865632));
 	}
 
 	@Test
@@ -76,5 +88,11 @@ public class ApplicationTests {
 
 		System.out.println(result);
 		assertEquals(200, result.getStatusCode().value());
+
+		System.out.println("Pubs found within 1K of '51.4634836,-0.0841914':");
+		System.out.println("--------------------------------");
+		for (GeoResult<Product> p : repository.findByLocationNear(new Point(51.4634836, -0.0841914), new Distance(100, Metrics.KILOMETERS))) {
+			System.out.println(p.getContent().getName());
+		}
 	}
 }
