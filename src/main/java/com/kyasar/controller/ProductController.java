@@ -2,6 +2,9 @@ package com.kyasar.controller;
 
 import com.kyasar.model.Product;
 import com.kyasar.service.ProductServiceImpl;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +46,14 @@ public class ProductController {
         }
     }
 
+    @ApiOperation(value = "Returns the list of all products")
+    @ApiResponses(value = {
+            // @ApiResponse(code = 200, message = "Success", response = Product.class),
+            @ApiResponse(code = 200, message = "Success", responseContainer = "List", response = Product.class),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Failure")})
     @RequestMapping(
             value = "/product",
             method=GET,
